@@ -27,4 +27,11 @@ function App() {
       setInput("")
     }
   }
+
+  const removeItem = (key) => {
+    const listToOperate = [...list];
+    const updatedList = listToOperate.filter((item) => item[key] !== key);
+
+    setList(updatedList)
+  }
 }
