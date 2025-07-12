@@ -34,4 +34,20 @@ function App() {
 
     setList(updatedList)
   }
+
+  const editItem = (index) => {
+    const todos = [...list];
+
+    //TODO: Create custom pop-up for editing
+    const editedTodo = prompt('Edit the todo');
+
+    if (editedTodo !== null && editedTodo.trim() !== '') {
+      const updatedTodos = [...todos];
+      updatedTodos[index].value = editedTodo;
+
+      setList(updatedTodos)
+    }
+  }
+
+
 }
