@@ -1,124 +1,105 @@
-import React, {useState} from "react";
-import "bootstrap/dist/css/bootstrap.css"
-import Container from "react-bootstrap/Container"
-import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/Col"
-import Button from "react-bootstrap/Button"
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
-import ListGroup from "react-bootstrap/ListGroup"
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  InputGroup,
+  FormControl,
+  ListGroup,
+} from "react-bootstrap";
 
+import "./App.css"
 
 function App() {
-  const [input, setInput] = useState('')
-  const [list, setList] = useState([])
+  const [input, setInput] = useState("");
+  const [list, setList] = useState([]);
 
   const addItem = () => {
-    if (input !== "") {
-      const userInput ={
-        id: Math.random(),
-        value: input
-      }
-
-      const updatedList = [...list];
-      updatedList.push(userInput)
-
-      setList(updatedList)
-      setInput("")
+    if (input.trim() !== "") {
+      const newItem = {
+        id: Date.now(),
+        value: input.trim(),
+      };
+      setList([...list, newItem]);
+      setInput("");
     }
-  }
+  };
 
-  const removeItem = (key) => {
-    const listToOperate = [...list];
-    const updatedList = listToOperate.filter((item) => item[key] !== key);
-
-    setList(updatedList)
-  }
+  const removeItem = (id) => {
+    setList(list.filter((item) => item.id !== id));
+  };
 
   const editItem = (index) => {
-    const todos = [...list];
-
     //TODO: Create custom pop-up for editing
-    const editedTodo = prompt('Edit the todo');
-
-    if (editedTodo !== null && editedTodo.trim() !== '') {
-      const updatedTodos = [...todos];
-      updatedTodos[index].value = editedTodo;
-
-      setList(updatedTodos)
+    const editedTodo = prompt("Edit the todo:", list[index].value);
+    if (editedTodo && editedTodo.trim() !== "") {
+      const updatedList = [...list];
+      updatedList[index].value = editedTodo.trim();
+      setList(updatedList);
     }
-  }
+  };
 
   return (
-    <Container>
-      <Row style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: '3rem',
-        fontWeight: 'bolder'
-      }}>
-        TODO LIST
+    <Container className="mt-5">
+      <Row className="justify-content-center mb-4">
+        <h1 className="text-center fw-bold">TODO LIST</h1>
       </Row>
 
-      <hr/>
-
-      <Row>
-        <Col md={{span: 5, offset: 4}}>
-          <InputGroup className="mb-3">
+      <Row className="justify-content-center">
+        <Col md={8}>
+          <InputGroup className="mb-4">
             <FormControl
               placeholder="Add item"
               size="lg"
               value={input}
-              onChange={(item) => setInput(item.target.value)}
-              aria-label="Add something"
-              aria-describedby="basic-addon2" />
-            <InputGroup>
-              <Button
-                variant="dark"
-                className="mt-2"
-                onClick={() => {addItem()}}
-              >
-                ADD
-              </Button>
-            </InputGroup>
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <Button variant="dark" onClick={addItem}>
+              ADD
+            </Button>
           </InputGroup>
         </Col>
       </Row>
-      <Row>
-        <Col md={{span: 5, offset: 4}}>
+
+      <Row className="justify-content-center">
+        <Col md={8}>
           <ListGroup>
-            {list.map((item, index) => {
-              return (
-                <div key={index}>
-                  <ListGroup.Item
-                    variant="dark"
-                    action
-                    style={{display: 'flex', justifyContent: 'space-between'}}
+            {list.map((item, index) => (
+              <ListGroup.Item
+                key={item.id}
+                className="d-flex flex-wrap justify-content-between align-items-center"
+                variant="secondary"
+              >
+                <span className="flex-grow-1 me-3 word-break">
+                  {item.value}
+                </span>
+                <div>
+                  {/*TODO: Make buttons to be in the same spot independently of text length*/}
+                  <Button
+                    variant="light"
+                    size="sm"
+                    className="me-2"
+                    onClick={() => removeItem(item.id)}
                   >
-                    {item.value}
-                    <span>
-                      <Button style={{marginRight: '10px'}}
-                              variant="light"
-                              onClick={() => {removeItem(item.id)}}
-                      >
-                        Remove
-                      </Button>
-                      <Button variant="light"
-                              onClick={() => {removeItem(item.id)}}
-                      >
-                        Edit
-                      </Button>
-                    </span>
-                  </ListGroup.Item>
+                    Remove
+                  </Button>
+                  <Button
+                    variant="light"
+                    size="sm"
+                    onClick={() => editItem(index)}
+                  >
+                    Edit
+                  </Button>
                 </div>
-              )
-            })}
+              </ListGroup.Item>
+            ))}
           </ListGroup>
         </Col>
       </Row>
     </Container>
-  )
+  );
 }
 
-export default App
+export default App;
